@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  contactdb:
+    image: mongo
+  setur.services.contact.api:
+    image: ${DOCKER_REGISTRY-}seturservicescontactapi
+    build:
+      context: .
+      dockerfile: Setur.Services.Contact/src/Setur.Services.Contact.Api/Dockerfile
+  seq:
+    image: datalust/seq

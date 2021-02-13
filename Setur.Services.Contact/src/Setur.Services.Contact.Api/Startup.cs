@@ -11,6 +11,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Setur.Services.Contact.Application;
 using Setur.Services.Contact.Core.Repositories;
+using Setur.Services.Contact.Infrastructure;
 using Setur.Services.Contact.Infrastructure.Mongo;
 using Setur.Services.Contact.Infrastructure.Mongo.Repositories;
 
@@ -49,6 +50,7 @@ namespace Setur.Services.Contact.Api
         {
             services.AddControllers();
             services.AddApplication();
+            services.AddInfrastructure();
             ConfigureDbSettings(services);
             AddServiceDependency(services);
         }

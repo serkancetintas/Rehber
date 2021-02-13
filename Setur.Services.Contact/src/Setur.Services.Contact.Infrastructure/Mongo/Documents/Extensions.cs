@@ -1,4 +1,5 @@
-﻿using Setur.Services.Contact.Core.ValueObjects;
+﻿using Setur.Services.Contact.Application.DTO;
+using Setur.Services.Contact.Core.ValueObjects;
 using System.Linq;
 using entity = Setur.Services.Contact.Core.Entities;
 
@@ -29,5 +30,28 @@ namespace Setur.Services.Contact.Infrastructure.Mongo.Documents
                     CreatedAt = p.CreatedAt
                 })
             };
+
+        public static ContactDto AsDto(this ContactDocument document)
+            => new ContactDto
+            {
+                Id = document.Id,
+                Name = document.Name,
+                Surname = document.Surname,
+                CompanyName = document.CompanyName
+            };
+
+        public static ContactDetailDto AsDetailDto(this ContactDocument document)
+           => new ContactDetailDto
+           {
+               Id = document.Id,
+               Name = document.Name,
+               Surname = document.Surname,
+               CompanyName = document.CompanyName,
+               ContactInfos = document.ContactInfos.Select(p=>new ContactInfoDto
+               {
+                   InfoContent = p.InfoContent,
+                   InfoType = p.InfoType.ToString(),
+               })
+           };
     }
 }

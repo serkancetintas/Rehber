@@ -9,6 +9,7 @@ namespace Setur.Services.Contact.Core.Repositories
     {
         Task<entity.Contact> GetAsync(AggregateId id);
         Task AddAsync(entity.Contact contact);
+        Task UpdateAsync(entity.Contact contact);
         Task DeleteAsync(Guid id);
         Task<bool> IsExist(string name, string surname, string companyName);
     }

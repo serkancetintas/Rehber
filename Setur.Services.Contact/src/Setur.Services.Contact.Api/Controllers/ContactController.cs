@@ -11,12 +11,19 @@ namespace Setur.Services.Contact.Api.Controllers
     {
         private readonly ICommandHandler<CreateContact> _commandHandler;
         private readonly ICommandHandler<DeleteContact> _deleteCommandHandler;
+        private readonly ICommandHandler<AddContactInfo> _addContactInfoCommandHandler;
+        private readonly ICommandHandler<DeleteContactInfo> _deleteContactInfoCommandHandler;
 
         public ContactController(ICommandHandler<CreateContact> commandHandler,
-                                 ICommandHandler<DeleteContact> deleteCommandHandler)
+                                 ICommandHandler<DeleteContact> deleteCommandHandler,
+                                 ICommandHandler<AddContactInfo> addContactInfoCommandHandler,
+                                 ICommandHandler<DeleteContactInfo> deleteContactInfoCommandHandler
+                                 )
         {
             _commandHandler = commandHandler;
             _deleteCommandHandler = deleteCommandHandler;
+            _addContactInfoCommandHandler = addContactInfoCommandHandler;
+            _deleteContactInfoCommandHandler = deleteContactInfoCommandHandler;
         }
 
         [HttpPost]
@@ -31,6 +38,22 @@ namespace Setur.Services.Contact.Api.Controllers
         public async Task<IActionResult> DeleteContact(Guid id)
         {
             await _deleteCommandHandler.HandleAsync(new DeleteContact(id));
+
+            return Ok();
+        }
+
+        [HttpPut("AddContactInfo")]
+        public async Task<IActionResult> AddContactInfo([FromBody] AddContactInfo addContactInfo)
+        {
+            await _addContactInfoCommandHandler.HandleAsync(addContactInfo);
+
+            return Ok();
+        }
+
+        [HttpPut("DeleteContactInfo")]
+        public async Task<IActionResult> DeleteContactInfo([FromBody] DeleteContactInfo deleteContactInfo)
+        {
+            await _deleteContactInfoCommandHandler.HandleAsync(deleteContactInfo);
 
             return Ok();
         }

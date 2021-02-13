@@ -21,6 +21,7 @@ namespace Setur.Services.Contact.Infrastructure.Mongo.Repositories
             return document?.AsEntity();
         }
         public Task AddAsync(entity.Contact contact) => _repository.AddAsync(contact.AsDocument());
+        public Task UpdateAsync(entity.Contact contact) => _repository.UpdateAsync(contact.AsDocument());
         public Task DeleteAsync(Guid id) => _repository.DeleteAsync(id);
 
         public async Task<bool> IsExist(string name, string surname, string companyName)

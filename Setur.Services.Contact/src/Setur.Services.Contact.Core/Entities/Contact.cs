@@ -48,5 +48,27 @@ namespace Setur.Services.Contact.Core.Entities
             CreatedAt = createdAt;
             ContactInfos = contactInfos ?? Enumerable.Empty<ContactInfo>();
         }
+   
+        public void AddContactInfo(ContactInfo contactInfo)
+        {
+            if (_contactInfos.Any(p=>p.InfoType == contactInfo.InfoType && p.InfoContent == contactInfo.InfoContent))
+            {
+                throw new ContactInfoAlreadyExistException(contactInfo.InfoType.ToString(), contactInfo.InfoContent);
+            }
+
+            _contactInfos.Add(contactInfo);
+        }
+
+        public void DeleteContactInfo(ContactInfo deleteContactInfo)
+        {
+            var contactInfo = _contactInfos.FirstOrDefault(p => p.InfoType == deleteContactInfo.InfoType &&
+                                                                p.InfoContent == deleteContactInfo.InfoContent);
+            if (contactInfo is null)
+            {
+                throw new ContactInfoNotFoundException(contactInfo.InfoType, contactInfo.InfoContent);
+            }
+
+            _contactInfos.Remove(contactInfo);
+        }
     }
 }

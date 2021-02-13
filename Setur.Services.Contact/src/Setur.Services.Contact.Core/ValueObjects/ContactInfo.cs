@@ -2,7 +2,7 @@
 
 namespace Setur.Services.Contact.Core.ValueObjects
 {
-    public struct ContactInfo
+    public class ContactInfo
     {
         public string InfoContent { get; }
         public InfoType InfoType { get; }

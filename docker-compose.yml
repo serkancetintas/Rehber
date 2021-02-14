@@ -10,3 +10,5 @@ services:
       dockerfile: Setur.Services.Contact/src/Setur.Services.Contact.Api/Dockerfile
   seq:
     image: datalust/seq
+  rabbitmq:
+    image: rabbitmq:3-management

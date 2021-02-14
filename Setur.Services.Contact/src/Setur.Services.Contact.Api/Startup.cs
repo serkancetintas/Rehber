@@ -50,7 +50,7 @@ namespace Setur.Services.Contact.Api
         {
             services.AddControllers();
             services.AddApplication();
-            services.AddInfrastructure();
+            services.AddInfrastructure(Configuration);
             ConfigureDbSettings(services);
             AddServiceDependency(services);
         }
@@ -68,6 +68,8 @@ namespace Setur.Services.Contact.Api
               .AllowAnyHeader());
 
             app.UseRouting();
+
+            app.UseInfrastructure();
 
             app.UseEndpoints(endpoints =>
             {

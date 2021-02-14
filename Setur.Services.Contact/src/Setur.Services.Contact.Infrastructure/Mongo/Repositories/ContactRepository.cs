@@ -1,13 +1,17 @@
-﻿using Setur.Services.Contact.Core.Entities;
+﻿using Setur.Services.Contact.Application.DTO;
+using Setur.Services.Contact.Core.Entities;
 using Setur.Services.Contact.Core.Repositories;
 using Setur.Services.Contact.Infrastructure.Mongo.Documents;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using entity = Setur.Services.Contact.Core.Entities;
 
 namespace Setur.Services.Contact.Infrastructure.Mongo.Repositories
 {
-    public class ContactRepository:IContactRepository
+    public class ContactRepository : IContactRepository
     {
         private readonly IMongoRepository<ContactDocument, Guid> _repository;
         public ContactRepository(IMongoRepository<ContactDocument, Guid> repository)
@@ -20,6 +24,14 @@ namespace Setur.Services.Contact.Infrastructure.Mongo.Repositories
             var document = await _repository.GetAsync(r => r.Id == id);
             return document?.AsEntity();
         }
+
+        public async Task<IEnumerable<entity.Contact>> GetAsyncByLocation()
+        {
+            var contacts = await _repository.FindAsync(p => p.ContactInfos.Any(p => p.InfoType == Core.ValueObjects.InfoType.Location));
+
+            return contacts.Select(p => p.AsEntity());
+        }
+
         public Task AddAsync(entity.Contact contact) => _repository.AddAsync(contact.AsDocument());
         public Task UpdateAsync(entity.Contact contact) => _repository.UpdateAsync(contact.AsDocument());
         public Task DeleteAsync(Guid id) => _repository.DeleteAsync(id);
@@ -27,7 +39,7 @@ namespace Setur.Services.Contact.Infrastructure.Mongo.Repositories
         public async Task<bool> IsExist(string name, string surname, string companyName)
         {
             var result = await _repository.ExistsAsync(x => x.Name == name && x.Surname == surname && x.CompanyName == companyName);
-            
+
             return result;
         }
     }

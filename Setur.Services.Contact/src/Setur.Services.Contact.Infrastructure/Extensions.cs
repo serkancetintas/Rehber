@@ -1,14 +1,24 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Setur.Services.Contact.Application.Events;
 using Setur.Services.Contact.Application.Queries;
+using Setur.Services.Contact.Application.Services;
+using Setur.Services.Contact.Infrastructure.RabbitMq;
+using Setur.Services.Contact.Infrastructure.Services;
 using System;
 
 namespace Setur.Services.Contact.Infrastructure
 {
     public static class Extensions
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddTransient<IMessageBroker, MessageBroker>();
+
             services.AddQueryHandlers();
+            services.AddRabbitMq(configuration);
+            //services.AddErrorHandler<ExceptionToResponseMapper>();
 
             return services;
         }
@@ -22,6 +32,29 @@ namespace Setur.Services.Contact.Infrastructure
                    .WithTransientLifetime());
 
             return services;
+        }
+
+        public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app)
+        {
+            app.UseRabbitMq()
+                 .SubscribeEvent<ReportRequestCreated>();
+
+            return app;
+        }
+
+        public static IBusSubscriber SubscribeEvent<T>(this IBusSubscriber busSubscriber) where T : class, IEvent
+           => busSubscriber.Subscribe<T>(async (serviceProvider, @event) =>
+           {
+               using var scope = serviceProvider.CreateScope();
+               await scope.ServiceProvider.GetRequiredService<IEventHandler<T>>().HandleAsync(@event);
+           });
+
+        public static TModel GetOptions<TModel>(this IConfiguration configuration, string sectionName)
+      where TModel : new()
+        {
+            var model = new TModel();
+            configuration.GetSection(sectionName).Bind(model);
+            return model;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Setur.Services.Contact.Core.Entities;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using entity = Setur.Services.Contact.Core.Entities;
 
@@ -8,6 +9,7 @@ namespace Setur.Services.Contact.Core.Repositories
     public interface IContactRepository
     {
         Task<entity.Contact> GetAsync(AggregateId id);
+        Task<IEnumerable<entity.Contact>> GetAsyncByLocation();
         Task AddAsync(entity.Contact contact);
         Task UpdateAsync(entity.Contact contact);
         Task DeleteAsync(Guid id);

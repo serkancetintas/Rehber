@@ -21,7 +21,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - MongoDbSettings:ConnectionString=mongodb://db:27017
     ports:
-      - "5051:80"
+      - "5051:8080"
   rabbitmq:
     container_name: rabbitmq
     restart: unless-stopped

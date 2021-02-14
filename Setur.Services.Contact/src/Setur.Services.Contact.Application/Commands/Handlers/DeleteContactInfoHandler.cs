@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Setur.Services.Contact.Application.Exceptions;
+﻿using Setur.Services.Contact.Application.Exceptions;
 using Setur.Services.Contact.Core.Repositories;
 using Setur.Services.Contact.Core.ValueObjects;
 using System;
@@ -10,13 +9,10 @@ namespace Setur.Services.Contact.Application.Commands.Handlers
     public class DeleteContactInfoHandler:ICommandHandler<DeleteContactInfo>
     {
         private readonly IContactRepository _repository;
-        private readonly ILogger<DeleteContactInfoHandler> _logger;
 
-        public DeleteContactInfoHandler(IContactRepository repository,
-                                     ILogger<DeleteContactInfoHandler> logger)
+        public DeleteContactInfoHandler(IContactRepository repository)
         {
             _repository = repository;
-            _logger = logger;
         }
 
         public async Task HandleAsync(DeleteContactInfo command)
@@ -24,7 +20,6 @@ namespace Setur.Services.Contact.Application.Commands.Handlers
             var contact = await _repository.GetAsync(command.ContactId);
             if (contact is null)
             {
-                _logger.LogError($"Contact was not found with id: {command.ContactId}");
                 throw new ContactNotFoundException(command.ContactId);
             }
 

@@ -5,9 +5,11 @@ using Setur.Services.Report.Application.Events;
 using Setur.Services.Report.Application.Events.External;
 using Setur.Services.Report.Application.Queries;
 using Setur.Services.Report.Application.Services;
+using Setur.Services.Report.Infrastructure.Exceptions;
 using Setur.Services.Report.Infrastructure.RabbitMq;
 using Setur.Services.Report.Infrastructure.Services;
 using System;
+using System.Linq;
 
 namespace Setur.Services.Report.Infrastructure
 {
@@ -19,7 +21,7 @@ namespace Setur.Services.Report.Infrastructure
 
             services.AddQueryHandlers();
             services.AddRabbitMq(configuration);
-            //services.AddErrorHandler<ExceptionToResponseMapper>();
+            services.AddErrorHandler<ExceptionToResponseMapper>();
 
             return services;
         }
@@ -43,6 +45,18 @@ namespace Setur.Services.Report.Infrastructure
             return app;
         }
 
+        public static IServiceCollection AddErrorHandler<T>(this IServiceCollection services)
+             where T : class, IExceptionToResponseMapper
+        {
+            services.AddTransient<ErrorHandlerMiddleware>();
+            services.AddSingleton<IExceptionToResponseMapper, T>();
+
+            return services;
+        }
+
+        public static IApplicationBuilder UseErrorHandler(this IApplicationBuilder builder)
+          => builder.UseMiddleware<ErrorHandlerMiddleware>();
+
         public static IBusSubscriber SubscribeEvent<T>(this IBusSubscriber busSubscriber) where T : class, IEvent
            => busSubscriber.Subscribe<T>(async (serviceProvider, @event) =>
            {
@@ -57,5 +71,9 @@ namespace Setur.Services.Report.Infrastructure
             configuration.GetSection(sectionName).Bind(model);
             return model;
         }
+
+        public static string Underscore(this string value)
+      => string.Concat(value.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x : x.ToString()))
+          .ToLowerInvariant();
     }
 }

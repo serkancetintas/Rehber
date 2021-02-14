@@ -8,7 +8,10 @@ services:
     build:
       context: .
       dockerfile: Setur.Services.Contact/src/Setur.Services.Contact.Api/Dockerfile
-  seq:
-    image: datalust/seq
+  setur.services.report.api:
+    image: ${DOCKER_REGISTRY-}seturservicesreportapi
+    build:
+      context: .
+      dockerfile: Setur.Services.Report/src/Setur.Services.Report.Api/Dockerfile
   rabbitmq:
     image: rabbitmq:3-management

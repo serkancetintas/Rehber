@@ -57,11 +57,7 @@ namespace Setur.Services.Contact.Api
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
+            app.UseErrorHandler();
             app.UseCors(x => x
               .AllowAnyOrigin()
               .AllowAnyMethod()

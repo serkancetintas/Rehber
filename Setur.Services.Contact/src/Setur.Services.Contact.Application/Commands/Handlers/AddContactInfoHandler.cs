@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Setur.Services.Contact.Application.Exceptions;
+﻿using Setur.Services.Contact.Application.Exceptions;
 using Setur.Services.Contact.Core.Exceptions;
 using Setur.Services.Contact.Core.Repositories;
 using Setur.Services.Contact.Core.ValueObjects;
@@ -12,14 +11,11 @@ namespace Setur.Services.Contact.Application.Commands.Handlers
     public class AddContactInfoHandler : ICommandHandler<AddContactInfo>
     {
         private readonly IContactRepository _repository;
-        private readonly ILogger<AddContactInfoHandler> _logger;
 
 
-        public AddContactInfoHandler(IContactRepository repository,
-                                     ILogger<AddContactInfoHandler> logger)
+        public AddContactInfoHandler(IContactRepository repository)
         {
             _repository = repository;
-            _logger = logger;
         }
 
         public async Task HandleAsync(AddContactInfo command)
@@ -27,7 +23,6 @@ namespace Setur.Services.Contact.Application.Commands.Handlers
             var contact = await _repository.GetAsync(command.ContactId);
             if (contact is null)
             {
-                _logger.LogError($"Contact was not found with id: {command.ContactId}");
                 throw new ContactNotFoundException(command.ContactId);
             }
 
@@ -65,7 +60,6 @@ namespace Setur.Services.Contact.Application.Commands.Handlers
 
             if (!EmailRegex.IsMatch(email))
             {
-                _logger.LogError($"Invalid email: {email}");
                 throw new InvalidEmailException(email);
             }
         }
@@ -78,7 +72,6 @@ namespace Setur.Services.Contact.Application.Commands.Handlers
 
             if (!PhoneNumberRegex.IsMatch(phoneNumber))
             {
-                _logger.LogError($"Invalid phone number: {phoneNumber}");
                 throw new InvalidPhoneNumberException(phoneNumber);
             }
         }
@@ -91,7 +84,6 @@ namespace Setur.Services.Contact.Application.Commands.Handlers
 
             if (!LocationRegex.IsMatch(location))
             {
-                _logger.LogError($"Invalid location: {location}");
                 throw new InvalidLocationException(location);
             }
         }

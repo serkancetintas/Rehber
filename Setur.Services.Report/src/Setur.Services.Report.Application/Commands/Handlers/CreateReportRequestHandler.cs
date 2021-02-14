@@ -23,7 +23,7 @@ namespace Setur.Services.Report.Application.Commands.Handlers
         {
             var reportId = Guid.NewGuid();
             var reportRequest = new ReportRequest(reportId, DateTime.Now, State.Preparing);
-
+           
             await _repository.AddAsync(reportRequest);
 
             await _messageBroker.PublishAsync(new ReportRequestCreated(reportId));

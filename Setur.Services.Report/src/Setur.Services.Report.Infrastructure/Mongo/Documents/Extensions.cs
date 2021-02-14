@@ -1,4 +1,5 @@
-﻿using Setur.Services.Report.Core.Entities;
+﻿using Setur.Services.Report.Application.DTO;
+using Setur.Services.Report.Core.Entities;
 using System.Linq;
 
 namespace Setur.Services.Report.Infrastructure.Mongo.Documents
@@ -24,5 +25,27 @@ namespace Setur.Services.Report.Infrastructure.Mongo.Documents
                     PhoneNumberCount = p.PhoneNumberCount
                 })
             };
+
+        public static ReportRequestDto AsDto(this ReportRequestDocument document)
+           => new ReportRequestDto
+           {
+               Id = document.Id,
+               RequestDate = document.RequestDate,
+               State = document.State.ToString()
+           };
+
+        public static ReportDetailDto AsDetailDto(this ReportRequestDocument document)
+           => new ReportDetailDto
+           {
+               Id = document.Id,
+               State = document.State.ToString(),
+               RequestDate = document.RequestDate,
+               ReportResults = document.ReportResults.Select(p => new ReportDto
+               {
+                   ContactCount = p.ContactCount,
+                   Location = p.Location,
+                   PhoneNumberCount = p.PhoneNumberCount
+               })
+           };
     }
 }
